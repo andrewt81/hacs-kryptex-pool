@@ -14,7 +14,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build HACS archive
-        run: zip -r hacs-kryptex-pool.zip custom_components hacs.json README.md LICENSE
+        run: |
+          cd custom_components/kryptex_pool
+          zip -r "$GITHUB_WORKSPACE/hacs-kryptex-pool.zip" .
+          cd "$GITHUB_WORKSPACE"
+          unzip -l hacs-kryptex-pool.zip
+          unzip -p hacs-kryptex-pool.zip manifest.json >/dev/null
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
