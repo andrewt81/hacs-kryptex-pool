@@ -15,7 +15,7 @@ from .const import CONF_ADDRESS, CONF_COIN, DOMAIN
 class KryptexConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle the Kryptex Pool configuration flow."""
 
-    VERSION = 1
+    VERSION = 2
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None

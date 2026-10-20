@@ -36,7 +36,7 @@ from .api import (
     worker_server_region,
     worker_shares,
 )
-from .const import CONF_ADDRESS, CONF_COIN, DOMAIN
+from .const import CONF_ADDRESS, CONF_COIN, DOMAIN, is_kryptex_account
 
 Worker = dict[str, Any]
 Coordinator = DataUpdateCoordinator[dict[str, Any]]
@@ -272,6 +272,8 @@ class KryptexSensor(CoordinatorEntity[Coordinator], SensorEntity):
         }
         if description.coin_unit:
             self._attr_native_unit_of_measurement = coin
+        if description.source == "balance" and is_kryptex_account(address):
+            self._attr_entity_registry_enabled_default = False
         self._hashrate_divisor = 1.0
         if description.hashrate:
             current_value = description.value_fn(coordinator.data)

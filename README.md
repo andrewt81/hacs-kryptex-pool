@@ -39,8 +39,9 @@ Pool API depends on the identifier used during setup:
 
 When a `krx` Mining Username is configured, the integration continues to provide
 the data that Kryptex exposes publicly, including workers and their activity. The
-balance sensors are marked unavailable instead of displaying an incorrect zero or
-preventing the integration from loading.
+balance sensors are disabled automatically instead of displaying an incorrect zero
+or preventing the integration from loading. They remain available in Home
+Assistant's entity registry and can be enabled manually if required.
 
 Kryptex does not currently document a public authenticated API for reading the
 private account balance. The balance must therefore be viewed in the Kryptex

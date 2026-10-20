@@ -22,6 +22,7 @@ from custom_components.kryptex_pool.api import (
     worker_server_region,
     worker_shares,
 )
+from custom_components.kryptex_pool.const import is_kryptex_account
 
 
 def test_extract_workers_from_nested_payload() -> None:
@@ -73,6 +74,12 @@ def test_hashrate_scale_selects_readable_si_unit() -> None:
     assert hashrate_scale(1_000) == (1_000, "kH/s")
     assert hashrate_scale(1_000_000_000_000) == (1_000_000_000_000, "TH/s")
     assert hashrate_scale(100_000_000_000_000) == (1_000_000_000_000, "TH/s")
+
+
+def test_kryptex_account_detection_is_case_insensitive() -> None:
+    assert is_kryptex_account("krx123456") is True
+    assert is_kryptex_account(" KRXABCDEF ") is True
+    assert is_kryptex_account("bc1qexample") is False
 
 
 def test_unknown_payload_is_safe() -> None:
