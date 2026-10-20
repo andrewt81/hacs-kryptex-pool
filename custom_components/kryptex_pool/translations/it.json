@@ -1,0 +1,24 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Collega un wallet Kryptex Pool",
+        "description": "Inserisci il simbolo della moneta e l'indirizzo del wallet di mining.",
+        "data": {"coin": "Simbolo moneta", "address": "Indirizzo wallet"}
+      }
+    },
+    "error": {"cannot_connect": "Connessione non riuscita o moneta non supportata"},
+    "abort": {"already_configured": "Questa moneta e questo wallet sono già configurati"}
+  },
+  "entity": {
+    "sensor": {
+      "confirmed": {"name": "Saldo confermato"},
+      "unconfirmed": {"name": "Saldo non confermato"},
+      "total": {"name": "Saldo totale"},
+      "paid": {"name": "Saldo pagato"},
+      "workers": {"name": "Worker"},
+      "online_workers": {"name": "Worker online"},
+      "hashrate": {"name": "Hashrate"}
+    }
+  }
+}

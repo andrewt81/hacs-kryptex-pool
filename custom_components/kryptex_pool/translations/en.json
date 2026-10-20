@@ -1,0 +1,24 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect a Kryptex Pool wallet",
+        "description": "Enter the pool coin symbol and mining wallet address.",
+        "data": {"coin": "Coin symbol", "address": "Wallet address"}
+      }
+    },
+    "error": {"cannot_connect": "Unable to connect or the coin is not supported"},
+    "abort": {"already_configured": "This coin and wallet are already configured"}
+  },
+  "entity": {
+    "sensor": {
+      "confirmed": {"name": "Confirmed balance"},
+      "unconfirmed": {"name": "Unconfirmed balance"},
+      "total": {"name": "Total balance"},
+      "paid": {"name": "Paid balance"},
+      "workers": {"name": "Workers"},
+      "online_workers": {"name": "Online workers"},
+      "hashrate": {"name": "Hashrate"}
+    }
+  }
+}
