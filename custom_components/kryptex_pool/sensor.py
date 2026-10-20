@@ -28,6 +28,7 @@ class KryptexSensorDescription(SensorEntityDescription):
     """Describe a Kryptex sensor."""
 
     value_fn: Callable[[dict[str, Any]], int | float]
+    source: str
     coin_unit: bool = False
 
 
@@ -37,6 +38,7 @@ SENSORS = (
         translation_key="confirmed",
         suggested_display_precision=8,
         state_class=SensorStateClass.TOTAL,
+        source="balance",
         coin_unit=True,
         value_fn=lambda data: numeric_value(data["balance"], "confirmed"),
     ),
@@ -45,6 +47,7 @@ SENSORS = (
         translation_key="unconfirmed",
         suggested_display_precision=8,
         state_class=SensorStateClass.TOTAL,
+        source="balance",
         coin_unit=True,
         value_fn=lambda data: numeric_value(data["balance"], "unconfirmed"),
     ),
@@ -53,6 +56,7 @@ SENSORS = (
         translation_key="total",
         suggested_display_precision=8,
         state_class=SensorStateClass.TOTAL,
+        source="balance",
         coin_unit=True,
         value_fn=lambda data: numeric_value(data["balance"], "total"),
     ),
@@ -61,6 +65,7 @@ SENSORS = (
         translation_key="paid",
         suggested_display_precision=8,
         state_class=SensorStateClass.TOTAL_INCREASING,
+        source="balance",
         coin_unit=True,
         value_fn=lambda data: numeric_value(
             data["balance"], "miner.paidBalance", "paid", "paidBalance"
@@ -69,11 +74,13 @@ SENSORS = (
     KryptexSensorDescription(
         key="workers",
         translation_key="workers",
+        source="workers",
         value_fn=lambda data: len(data["workers"]),
     ),
     KryptexSensorDescription(
         key="online_workers",
         translation_key="online_workers",
+        source="workers",
         value_fn=lambda data: sum(
             worker_is_online(worker) for worker in data["workers"]
         ),
@@ -83,6 +90,7 @@ SENSORS = (
         translation_key="hashrate",
         native_unit_of_measurement="H/s",
         suggested_display_precision=2,
+        source="workers",
         value_fn=lambda data: round(
             sum(worker_hashrate(worker) for worker in data["workers"]), 2
         ),
@@ -130,3 +138,11 @@ class KryptexSensor(CoordinatorEntity[DataUpdateCoordinator], SensorEntity):
     def native_value(self) -> int | float:
         """Return the current sensor value."""
         return self.entity_description.value_fn(self.coordinator.data)
+
+    @property
+    def available(self) -> bool:
+        """Return whether the API source for this sensor is available."""
+        source_available = self.coordinator.data.get(
+            f"{self.entity_description.source}_available", True
+        )
+        return super().available and source_available

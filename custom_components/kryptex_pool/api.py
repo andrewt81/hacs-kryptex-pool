@@ -94,14 +94,27 @@ class KryptexClient:
         await self._get_json(f"/api/v1/coin/{quote(self._coin, safe='')}/info")
 
     async def async_get_data(self) -> dict[str, Any]:
-        """Fetch balance and workers in parallel."""
+        """Fetch balance and workers, preserving any available partial data."""
         coin = quote(self._coin, safe="")
         address = quote(self._address, safe="")
         balance, workers = await asyncio.gather(
             self._get_json(f"/{coin}/api/v1/miner/balance/{address}"),
             self._get_json(f"/{coin}/api/v3/miner/workers/{address}"),
+            return_exceptions=True,
         )
+
+        balance_available = not isinstance(balance, Exception)
+        workers_available = not isinstance(workers, Exception)
+        if not balance_available and not workers_available:
+            raise KryptexAPIError("Unable to communicate with Kryptex Pool")
+
         return {
-            "balance": balance if isinstance(balance, dict) else {},
-            "workers": extract_workers(workers),
+            "balance": (
+                balance
+                if balance_available and isinstance(balance, dict)
+                else {}
+            ),
+            "workers": extract_workers(workers) if workers_available else [],
+            "balance_available": balance_available,
+            "workers_available": workers_available,
         }

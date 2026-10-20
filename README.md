@@ -19,6 +19,10 @@ Custom Home Assistant integration for the public Kryptex Pool API.
 
 The integration uses Kryptex Pool's public, read-only API. No password or API token is required.
 
+Some Kryptex account identifiers return HTTP 403 for the public balance endpoint.
+In that case, worker monitoring remains available while balance sensors are marked
+unavailable instead of preventing the integration from loading.
+
 ## Manual installation
 
 Copy `custom_components/kryptex_pool` into the `custom_components` directory of your Home Assistant configuration, then restart Home Assistant.
