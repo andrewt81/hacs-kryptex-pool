@@ -9,9 +9,18 @@ from custom_components.kryptex_pool.api import (
     KryptexAPIError,
     KryptexClient,
     extract_workers,
+    hashrate_scale,
     numeric_value,
+    worker_agent,
     worker_hashrate,
+    worker_hashrate_period,
+    worker_identity,
     worker_is_online,
+    worker_last_share,
+    worker_name,
+    worker_scheme,
+    worker_server_region,
+    worker_shares,
 )
 
 
@@ -30,6 +39,40 @@ def test_worker_helpers_accept_common_shapes() -> None:
     worker = {"status": "online", "hashrate": {"current": 1234.5}}
     assert worker_is_online(worker) is True
     assert worker_hashrate(worker) == 1234.5
+
+
+def test_worker_helpers_support_current_kryptex_payload() -> None:
+    worker = {
+        "worker": "N37",
+        "scheme": "pps",
+        "status": "online",
+        "last_share": 1_792_454_632_813,
+        "valid": 156,
+        "stale": 1,
+        "invalid": 0,
+        "avg_hashrate_24h": "21266998240360.68",
+        "avg_hashrate_3h": "20000000000000",
+        "avg_hashrate_30m": "19000000000000",
+        "agent": "SRBMiner-MULTI/3.7.7",
+        "server_geo": "eu",
+    }
+
+    assert worker_identity(worker) == "N37|pps"
+    assert worker_name(worker) == "N37"
+    assert worker_scheme(worker) == "PPS"
+    assert worker_hashrate(worker) == 19_000_000_000_000
+    assert worker_hashrate_period(worker, "24h") == 21_266_998_240_360.68
+    assert worker_shares(worker, "valid") == 156
+    assert worker_last_share(worker) == 1_792_454_632_813
+    assert worker_agent(worker) == "SRBMiner-MULTI/3.7.7"
+    assert worker_server_region(worker) == "EU"
+
+
+def test_hashrate_scale_selects_readable_si_unit() -> None:
+    assert hashrate_scale(999) == (1, "H/s")
+    assert hashrate_scale(1_000) == (1_000, "kH/s")
+    assert hashrate_scale(1_000_000_000_000) == (1_000_000_000_000, "TH/s")
+    assert hashrate_scale(100_000_000_000_000) == (1_000_000_000_000, "TH/s")
 
 
 def test_unknown_payload_is_safe() -> None:

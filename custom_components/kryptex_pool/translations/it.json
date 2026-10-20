@@ -18,7 +18,18 @@
       "paid": {"name": "Saldo pagato"},
       "workers": {"name": "Worker"},
       "online_workers": {"name": "Worker online"},
-      "hashrate": {"name": "Hashrate"}
+      "hashrate": {"name": "Hashrate"},
+      "worker_status": {"name": "Stato"},
+      "worker_scheme": {"name": "Schema di pagamento"},
+      "worker_hashrate_30m": {"name": "Hashrate 30 minuti"},
+      "worker_hashrate_3h": {"name": "Hashrate 3 ore"},
+      "worker_hashrate_24h": {"name": "Hashrate 24 ore"},
+      "worker_valid_shares": {"name": "Share valide"},
+      "worker_stale_shares": {"name": "Share stale"},
+      "worker_invalid_shares": {"name": "Share non valide"},
+      "worker_last_share": {"name": "Ultima share"},
+      "worker_software": {"name": "Software miner"},
+      "worker_server_region": {"name": "Regione server"}
     }
   }
 }

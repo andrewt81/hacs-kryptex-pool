@@ -6,7 +6,12 @@ Custom Home Assistant integration for the public Kryptex Pool API.
 
 - Confirmed, unconfirmed, total, and lifetime paid balances
 - Active and online worker counts
-- Reported total hashrate
+- Reported total hashrate with automatic H/s, kH/s, MH/s, GH/s, TH/s, PH/s,
+  or EH/s scaling
+- A separate Home Assistant device for every Kryptex worker
+- Per-worker status, payment scheme, 30-minute, 3-hour, and 24-hour hashrates
+- Per-worker valid, stale, and invalid shares, last share time, mining software,
+  and pool server region
 - Cloud polling every 60 seconds
 - UI configuration by coin symbol and mining wallet address
 

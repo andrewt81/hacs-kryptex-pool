@@ -60,7 +60,7 @@ def worker_is_online(worker: dict[str, Any]) -> bool:
 
 
 def worker_hashrate(worker: dict[str, Any]) -> float:
-    """Return the worker hashrate in hashes per second when available."""
+    """Return the best current worker hashrate in hashes per second."""
     return numeric_value(
         worker,
         "hashrate",
@@ -68,7 +68,75 @@ def worker_hashrate(worker: dict[str, Any]) -> float:
         "hashrate.current",
         "hashrate.realtime",
         "stats.hashrate",
+        "avg_hashrate_30m",
+        "avg_hashrate_3h",
+        "avg_hashrate_24h",
     )
+
+
+def worker_hashrate_period(worker: dict[str, Any], period: str) -> float:
+    """Return a worker average hashrate for a Kryptex time period."""
+    return numeric_value(worker, f"avg_hashrate_{period}")
+
+
+def worker_identity(worker: dict[str, Any]) -> str | None:
+    """Return a stable identity for a worker and payment scheme."""
+    name = str(worker.get("worker") or worker.get("name") or "").strip()
+    if not name:
+        return None
+    scheme = str(worker.get("scheme") or "default").strip().lower()
+    return f"{name}|{scheme}"
+
+
+def worker_name(worker: dict[str, Any]) -> str:
+    """Return the display name of a Kryptex worker."""
+    return str(worker.get("worker") or worker.get("name") or "Worker").strip()
+
+
+def worker_scheme(worker: dict[str, Any]) -> str | None:
+    """Return the worker payment scheme."""
+    value = str(worker.get("scheme") or "").strip()
+    return value.upper() or None
+
+
+def worker_shares(worker: dict[str, Any], share_type: str) -> int:
+    """Return a worker share counter."""
+    return int(numeric_value(worker, share_type))
+
+
+def worker_last_share(worker: dict[str, Any]) -> float | None:
+    """Return the last share timestamp in milliseconds."""
+    value = numeric_value(worker, "last_share", "lastShare")
+    return value or None
+
+
+def worker_agent(worker: dict[str, Any]) -> str | None:
+    """Return the mining software reported by the worker."""
+    value = str(worker.get("agent") or "").strip()
+    return value or None
+
+
+def worker_server_region(worker: dict[str, Any]) -> str | None:
+    """Return the Kryptex server region used by the worker."""
+    value = str(worker.get("server_geo") or worker.get("region") or "").strip()
+    return value.upper() or None
+
+
+def hashrate_scale(value: float | None) -> tuple[float, str]:
+    """Return a readable divisor and SI unit for a hashrate in H/s."""
+    magnitude = abs(value or 0)
+    units = (
+        (1_000_000_000_000_000_000, "EH/s"),
+        (1_000_000_000_000_000, "PH/s"),
+        (1_000_000_000_000, "TH/s"),
+        (1_000_000_000, "GH/s"),
+        (1_000_000, "MH/s"),
+        (1_000, "kH/s"),
+    )
+    for divisor, unit in units:
+        if magnitude >= divisor:
+            return divisor, unit
+    return 1, "H/s"
 
 
 class KryptexClient:
